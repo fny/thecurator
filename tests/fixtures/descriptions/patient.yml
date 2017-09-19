@@ -1,0 +1,20 @@
+name: patient
+description: >
+  A patient in the hostpital
+
+columns:
+  - name: mrn
+    type: string
+    description: >
+      Patient's medical record number
+  - name: name
+    type: string
+    description: >
+      Patient name
+    cleaner: StripCleaner
+
+  - name: age
+    type: integer
+    description: >
+      Age of the patient
+    cleaner: PositiveIntegerCleaner

@@ -1,0 +1,43 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+title: Table
+description: Description of a table in the database
+type: object
+properties:
+  name:
+    description: Table's name in the database
+    type: string
+  description:
+    description: Table's description
+    type: string
+  columns:
+    description: Table's columns
+    type: array
+    items:
+      description: Column
+      type: object
+      properties:
+        name:
+          description: Column's name
+          type: string
+        description:
+          description: Column's description
+          type: string
+        type:
+          description: Data type of the column
+          enum:
+            - boolean
+            - date
+            - datetime
+            - float
+            - double
+            - integer
+            - string
+            - decimal
+      required:
+        - name
+        - type
+    minItems: 1
+    uniqueItems: true
+
+required:
+  - name

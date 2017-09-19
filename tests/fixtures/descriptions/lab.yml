@@ -1,0 +1,33 @@
+name: lab
+description: >
+  Labs taken from patients
+columns:
+  - name: patient_mrn
+    description: >
+      References the patient for this lab
+    type: string
+    references: patient.mrn
+
+  - name: name
+    description: >
+      Lab name
+    type: string
+    cleaner: LabCleaner.name
+
+  - name: value
+    description: >
+      The value returned for the lab
+    type: decimal
+    cleaner: LabCleaner.value
+
+  - name: order_time
+    description: >
+      Time the medication was ordered
+    type: datetime
+    cleaner: DateTimeCleaner
+
+  - name: taken_time
+    description: >
+      Time the lab was taken by a clinician
+    type: datetime
+    cleaner: DateTimeCleaner
