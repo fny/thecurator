@@ -13,14 +13,12 @@ with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='thecurator',
-    version='0.0.1',
-
-    packages = find_packages(exclude=['tests']),
+    name='The Curator',
+    version='.'.join(map(str, __version__)),
+    packages=find_packages(exclude=['tests']),
     long_description=long_description,
     keywords='import modules packages files',
     license='Proprietary',
-
     author='Faraz Yashar',
     author_email='faraz.yashar@gmail.com',
     url='https://github.com/fny/thecurator',
