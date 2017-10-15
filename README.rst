@@ -13,7 +13,7 @@ The Curator 🖼
 Usage
 -----
 
-Coming soon...
+See the tests. More coming soon...
 
 
 Install development requirements `pip install -e .[dev]`
