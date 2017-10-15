@@ -1,40 +1,43 @@
 import os
-
-import addict
-import jinja2
 import jsonschema
 import yaml
-import sqlalchemy
+import sys
+import importlib
+
 script_path = os.path.dirname(__file__)
 
-SCHEMA = yaml.load(open(os.path.join(script_path, './table_description/schema.yml')))
-TEMPLATE_PATH = os.path.join(script_path, './table_description/template.yml.jinja2')
+SCHEMA = yaml.load(
+    open(os.path.join(script_path, './table_description/schema.yml')))
 
-def generate(sqlalchemy_engine, table_name, output_path=None):
-    """Generates description file to fill out for the specified table"""
 
-    if output_path and os.path.isfile(output_path):
-        print("The file '{}' already exists!".format(output_path))
-        return 1
+class Registry():
+    def __init__(self, description_paths):
+        self.tables_by_name = {}
+        for path in description_paths:
+            description = load_file(path)
+            self.tables_by_name[description['name']] = description
 
-    import jinja2
+    def get_table(self, table_name):
+        try:
+            return self.tables_by_name[table_name]
+        except KeyError:
+            tb = sys.exc_info()[2]
+            raise LookupError(f'No table found with name {table_name}').with_traceback(tb)
 
-    jinja2.filters.FILTERS['map_type'] = __map_sqlalchemy_column_type
-    template = jinja2.Template(open(TEMPLATE_PATH).read())
+    def get_column(self, table_name, column_name):
+        try:
+            return self.get_table(table_name)['columns_by_name'][column_name]
+        except KeyError:
+            tb = sys.exc_info()[2]
+            raise LookupError(f'No column found in table {table_name} with name {column_name}').with_traceback(tb)
 
-    inspector = sqlalchemy.engine.reflection.Inspector.from_engine(sqlalchemy_engine)
-    output = template.render(columns = inspector.get_columns(table_name))
+    def get_transform(self, table_name, column_name):
+        column = self.get_column(table_name, column_name)
+        return column.get('transform_fn')
 
-    if output_path:
-        with open(output_path, 'w') as f:
-            f.write(output)
-        print("Description template for {}, written to {}".format(table_name, output_path))
-    else:
-        return output
 
 def load_file(file_path):
-    """Returns a and addict.Dict for the given provided table description.
-
+    """TODO Description
     Args:
         file_path (str): Path to YAML description.
 
@@ -42,24 +45,30 @@ def load_file(file_path):
         addict.Dict
     """
     description = yaml.load(open(file_path))
-    __validate(description)
-    return addict.Dict(description)
+    validate(description)
+    columns = description['columns']
+    columns_by_name = {}
+    for column in columns:
+        column_name = column['name']
+        columns_by_name[column_name] = column
+        if 'transform' in column:
+            column['transform_fn'] = __convert_transform_to_fn(column['transform'])
+    description['columns_by_name'] = columns_by_name
+    return description
 
-def __map_sqlalchemy_column_type(sqlalchemy_column_type):
-    """Map the SQLAlchemy column type to one for the description template"""
-    if sqlalchemy_column_type is sqlalchemy.types.Integer:
-        return 'integer'
-    if sqlalchemy_column_type is sqlalchemy.types.Float:
-        return 'decimal'
-    if sqlalchemy_column_type is sqlalchemy.types.String:
-        return 'string'
-    if sqlalchemy_column_type is sqlalchemy.types.Date:
-        return 'date'
-    if sqlalchemy_column_type is sqlalchemy.types.DateTime:
-        return 'datetime'
-    raise "No mapping for SQLAlchemy column type {}".format(sqlalchemy_column_type)
 
-def __validate(description):
+def __convert_transform_to_fn(transform_key):
+    split = transform_key.split('.')
+    fn_name = split.pop()
+    module_name = '.'.join(split)
+    module = importlib.import_module(module_name)
+    fn = getattr(module, fn_name)
+    if fn is None:
+        raise ValueError(f'No transform found for {transform_key}')
+    return fn
+
+
+def validate(description):
     """Ensures the provided description is valid.
 
     Args:

@@ -1,6 +1,5 @@
-"""Helper functions used throughout the library"""
-import itertools
 import glob
+import itertools
 import os
 
 

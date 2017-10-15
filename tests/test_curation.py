@@ -1,18 +1,16 @@
 import csv
-import glob
-import json
-import os
-from thecurator.curation import Curator
+import pandas
+from helpers import relative_path, expand_path
+from thecurator import Curator
 from fixtures.db import engine
+from fixtures.data.labs_clean import data as labs_clean
 
-def relative_path(path):
-    return os.path.join(os.path.dirname(__file__), path)
 
 class FixtureData():
     def __init__(self, file_path):
         self.headers = None
         self.data = []
-        fixture_path = relative_path(f'../fixtures/data/{file_path}')
+        fixture_path = relative_path(__file__, f'fixtures/data/{file_path}')
         with open(fixture_path, 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
             for i, row in enumerate(csv_reader):
@@ -20,6 +18,7 @@ class FixtureData():
                     self.headers = row
                 else:
                     self.data.append(row)
+
     def rows(self):
         """Returns the data as rows"""
         return self.data
@@ -39,6 +38,9 @@ class FixtureData():
             bundle = dict(zip(self.headers, row))
             dict_data.append(bundle)
         return dict_data
+
+    def df(self):
+        return pandas.DataFrame(self.dicts())
 
 
 class TestFixtureData():
@@ -63,8 +65,11 @@ class TestFixtureData():
             'order_time': '09/03/17 10:30AM',
             'taken_time': '09/03/17 11:30AM'
         }
-curator = Curator(engine, glob.glob(relative_path('../fixtures/descriptions/*.yml')))
-labs_clean = json.loads(open(relative_path('../fixtures/data/labs_clean.json')).read())
+
+
+description_paths = expand_path(__file__, 'fixtures/descriptions/*.yml')
+curator = Curator(engine, description_paths)
+
 
 class TestCurator():
     def setup_method(self):
@@ -76,3 +81,10 @@ class TestCurator():
         for result, clean in zip(results, labs_clean):
             assert result == clean
 
+    def test_clean_df(self):
+        df = self.labs_dirty.df()
+        results = curator.clean_df('lab', df)
+        assert pandas.DataFrame(labs_clean).to_dict() == results.to_dict()
+
+    def test_insert_dicts(self):
+        curator.insert_dicts('lab', self.labs_dirty.dicts())

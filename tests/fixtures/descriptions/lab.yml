@@ -12,22 +12,22 @@ columns:
     description: >
       Lab name
     type: string
-    cleaner: LabCleaner.name
+    transform: transformers.lab.name
 
   - name: value
     description: >
       The value returned for the lab
     type: decimal
-    cleaner: LabCleaner.value
+    transform: transformers.lab.value
 
   - name: order_time
     description: >
       Time the medication was ordered
     type: datetime
-    cleaner: DateTimeCleaner
+    transform: transformers.common.datetime
 
   - name: taken_time
     description: >
       Time the lab was taken by a clinician
     type: datetime
-    cleaner: DateTimeCleaner
+    transform: transformers.common.datetime

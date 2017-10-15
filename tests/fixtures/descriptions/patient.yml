@@ -7,14 +7,15 @@ columns:
     type: string
     description: >
       Patient's medical record number
+
   - name: name
     type: string
     description: >
       Patient name
-    cleaner: StripCleaner
+    transform: transformers.common.strip
 
   - name: age
     type: integer
     description: >
       Age of the patient
-    cleaner: PositiveIntegerCleaner
+    transform: transformers.common.positive_integer

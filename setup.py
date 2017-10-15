@@ -30,8 +30,6 @@ setup(
         'Programming Language :: Python :: 3'
     ],
     install_requires=[
-        'addict',
-        'jinja2',
         'jsonschema',
         'pyaml',
         'sqlalchemy'
@@ -39,6 +37,7 @@ setup(
     extras_require={
         'dev': [
             'dateparser',
+            'pandas',
             'pytest'
         ]
     }

@@ -1,10 +1,11 @@
 import sqlalchemy
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, DateTime
+from sqlalchemy import Column, Integer, String, Numeric, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = sqlalchemy.create_engine('sqlite://')
 
 Base = declarative_base()
+
 
 class Patient(Base):
     __tablename__ = 'patient'
@@ -14,6 +15,7 @@ class Patient(Base):
     name = Column(String)
     age = Column(Integer)
 
+
 class Lab(Base):
     __tablename__ = 'lab'
     id = Column(Integer, primary_key=True)
@@ -22,3 +24,6 @@ class Lab(Base):
     value = Column(Numeric)
     order_time = Column(DateTime)
     taken_time = Column(DateTime)
+
+
+Base.metadata.create_all(engine)
