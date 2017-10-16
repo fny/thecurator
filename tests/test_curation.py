@@ -76,14 +76,14 @@ class TestCurator():
         self.labs_dirty = FixtureData('labs_dirty.csv')
         self.patients_dirty = FixtureData('patients_dirty.csv')
 
-    def test_clean_dicts(self):
-        results = curator.clean_dicts('lab', self.labs_dirty.dicts())
+    def test_transform_dicts(self):
+        results = curator.transform_dicts('lab', self.labs_dirty.dicts())
         for result, clean in zip(results, labs_clean):
             assert result == clean
 
-    def test_clean_df(self):
+    def test_transform_df(self):
         df = self.labs_dirty.df()
-        results = curator.clean_df('lab', df)
+        results = curator.transform_df('lab', df)
         assert pandas.DataFrame(labs_clean).to_dict() == results.to_dict()
 
     def test_insert_dicts(self):

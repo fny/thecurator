@@ -4,15 +4,19 @@ import sqlalchemy
 from .table_description import Registry, load_file
 
 
-__version__ = (0, 0, 2)
+__version__ = (0, 1, 0)
 
 
 def requires_row(func):
+    """
+    """
     func.requires_row = True
     return func
 
 
 def transform_failure(self, message, raw_value, location=None):
+    """
+    """
     caller = inspect.getframeinfo(inspect.stack()[1][0])
     if not location:
         location = "%s:%d" % (caller.filename, caller.lineno)
@@ -21,6 +25,8 @@ def transform_failure(self, message, raw_value, location=None):
 
 class Curator():
     def __init__(self, sqlalchemy_engine, description_paths):
+        """
+        """
         if len(description_paths) == 0:
             raise ValueError("Description paths argument provided was empty")
 
@@ -29,18 +35,36 @@ class Curator():
         self.sqlalchemy_meta.reflect(bind=sqlalchemy_engine)
         self.table_registry = Registry(description_paths)
 
-    def insert_dicts(self, table_name, data):
+    def insert_dicts(self, table_name, raw_rows):
+        """Transform and insert the provided dicts into the database.
+
+        Insertion occurs in a database transaction, so if any failure occurs
+        an exception will be raised and nothing will be writtent to the
+        database.
+
+        Args:
+            table_name (str): Message to incorporate into the final message
+            df (pandas.DataFrame): Value the failure occurred for
+
+        Raises: Exception when the insert fails
+        """
+        cleaned_rows = self.transform_dicts(table_name, raw_rows)
         table = self.sqlalchemy_meta.tables[table_name]
         connection = self.engine.connect()
         transaction = connection.begin()
         try:
-            cleaned_values = self.clean_dicts(table_name, data)
-            connection.execute(table.insert(), cleaned_values)
+            connection.execute(table.insert(), cleaned_rows)
         except:
             transaction.rollback()
-            raise
+            raise Exception('Insert failed')
 
-    def clean_dicts(self, table_name, raw_rows):
+    def transform_dicts(self, table_name, raw_rows):
+        """Transforms a pandas.DataFrame in place according to the description.
+
+        Args:
+            table_name (str): Message to incorporate into the final message
+            df (pandas.DataFrame): Value the failure occurred for
+        """
         column_names = raw_rows[0].keys()
         transforms_by_column = {}
         for column_name in column_names:
@@ -60,7 +84,13 @@ class Curator():
             cooked_rows.append(cooked_row)
         return cooked_rows
 
-    def clean_df(self, table_name, df):
+    def transform_df(self, table_name, df):
+        """Transforms a pandas.DataFrame in place according to the description.
+
+        Args:
+            table_name (str): Message to incorporate into the final message
+            df (pandas.DataFrame): Value the failure occurred for
+        """
         for column_name in df.columns:
             transform = self.table_registry.get_transform(table_name, column_name)
             if not transform:
@@ -78,8 +108,8 @@ class TransformFailure():
 
     Args:
         message (str): Message to incorporate into the final message
-        value: Value the failure occurred for
-        location: Where in the code the failure occurred
+        value (any): Value the failure occurred for
+        location (str): Where in the code the failure occurred
 
     Note:
         This implementation of this class is considered internal and is not
