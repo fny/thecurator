@@ -1,0 +1,10 @@
+jsonschema
+pyaml
+sqlalchemy
+
+dateparser
+pandas
+
+readme_renderer
+flake8
+pytest
