@@ -9,14 +9,28 @@ __version__ = (0, 1, 0)
 
 
 def requires_row(func):
-    """
+    """Decorator used to mark transforms that require an entire row as input.
+
+    Attributes:
+        func (function): The function
+
+    Returns:
+        function: The function with an
     """
     func.requires_row = True
     return func
 
 
 def transform_failure(self, message, raw_value, location=None):
-    """
+    """Creates a TransformFailure used to detail when things go wrong.
+
+    Attributes:
+        message (string): The message you want to display
+        raw_value (any): The value to be transformed
+        location (string, optional): Source of the error, defaults to caller
+
+    Returns:
+        TransformFailure
     """
     caller = inspect.getframeinfo(inspect.stack()[1][0])
     if not location:
@@ -45,7 +59,7 @@ class Curator():
 
         Args:
             table_name (str): Message to incorporate into the final message
-            df (pandas.DataFrame): Value the failure occurred for
+            raw_rows (dict): Value the failure occurred for
 
         Raises: Exception when the insert fails
         """
@@ -60,11 +74,14 @@ class Curator():
             raise Exception('Insert failed')
 
     def transform_dicts(self, table_name, raw_rows):
-        """Transforms a pandas.DataFrame in place according to the description.
+        """Transforms dicts according to the table description.
 
         Args:
             table_name (str): Message to incorporate into the final message
-            df (pandas.DataFrame): Value the failure occurred for
+            raw_rows (:obj:`list` of :obj:`dict`): Rows to transform
+
+        Returns:
+            :obj:`list` of :obj:`dict`: Transformed dicts
         """
         column_names = raw_rows[0].keys()
         transforms_by_column = {}
@@ -92,6 +109,9 @@ class Curator():
         Args:
             table_name (str): Message to incorporate into the final message
             df (pandas.DataFrame): Value the failure occurred for
+
+        Returns:
+            pandas.DataFrame: In-place transformed DataFrame
         """
         for column_name in df.columns:
             transform = self.table_registry.get_transform(table_name, column_name)
@@ -106,7 +126,7 @@ class Curator():
 
 class TransformFailure():
     """Returned by a transformer whenever something goes wrong during a
-    transform call.
+    transformation.
 
     Args:
         message (str): Message to incorporate into the final message
