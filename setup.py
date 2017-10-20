@@ -1,6 +1,6 @@
 import os
 from setuptools import setup, find_packages
-from thecurator import __version__
+from thecurator import __VERSION__
 
 # Use a consistent encoding
 from codecs import open
@@ -14,7 +14,7 @@ with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='The Curator',
-    version='.'.join(map(str, __version__)),
+    version='.'.join(map(str, __VERSION__)),
     packages=find_packages(exclude=['tests']),
     long_description=long_description,
     keywords='',

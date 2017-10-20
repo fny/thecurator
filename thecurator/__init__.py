@@ -3,9 +3,8 @@ import sqlalchemy
 from .private import pypy_incompatible
 from .private.table_description import Registry
 
-
-
-__version__ = (0, 1, 0)
+"""Version number of this package"""
+__VERSION__ = (0, 1, 1)
 
 
 def requires_row(func):
