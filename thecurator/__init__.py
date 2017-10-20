@@ -1,7 +1,7 @@
 import inspect
 import sqlalchemy
+from .private.table_description import Registry
 
-from .table_description import Registry, load_file
 
 
 __version__ = (0, 1, 0)
