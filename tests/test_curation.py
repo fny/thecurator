@@ -1,9 +1,12 @@
 import csv
-import pandas
+from thecurator.private import IS_PYPY, pypy_incompatible
 from helpers import relative_path, expand_path
 from thecurator import Curator
 from fixtures.db import engine
 from fixtures.data.labs_clean import data as labs_clean
+
+if not IS_PYPY:
+    import pandas
 
 
 class FixtureData():
@@ -39,6 +42,7 @@ class FixtureData():
             dict_data.append(bundle)
         return dict_data
 
+    @pypy_incompatible
     def df(self):
         return pandas.DataFrame(self.dicts())
 
@@ -81,6 +85,7 @@ class TestCurator():
         for result, clean in zip(results, labs_clean):
             assert result == clean
 
+    @pypy_incompatible
     def test_transform_df(self):
         df = self.labs_dirty.df()
         results = curator.transform_df('lab', df)

@@ -1,5 +1,6 @@
 import inspect
 import sqlalchemy
+from .private import pypy_incompatible
 from .private.table_description import Registry
 
 
@@ -84,6 +85,7 @@ class Curator():
             cooked_rows.append(cooked_row)
         return cooked_rows
 
+    @pypy_incompatible
     def transform_df(self, table_name, df):
         """Transforms a pandas.DataFrame in place according to the description.
 
