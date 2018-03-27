@@ -12,10 +12,10 @@ with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='The Curator',
+    name='thecurator',
     version='.'.join(map(str, __VERSION__)),
     packages=find_packages(exclude=['tests']),
-    package_data={'thecurator': ['data/table_description_schema.yml']},
+    package_data={'thecurator': ['table_description_schema.yml']},
     long_description=long_description,
     keywords='',
     license='Proprietary',
