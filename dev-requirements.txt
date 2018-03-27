@@ -1,10 +1,11 @@
+# Package requirements
 jsonschema
 pyaml
 sqlalchemy
 
+# Test requirements
 dateparser
 pandas
-
 readme_renderer
 flake8
 pytest
