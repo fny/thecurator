@@ -7,7 +7,6 @@ from codecs import open
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-
 # Get the long description from the README file
 with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
@@ -16,6 +15,7 @@ setup(
     name='The Curator',
     version='.'.join(map(str, __VERSION__)),
     packages=find_packages(exclude=['tests']),
+    package_data={'thecurator': ['data/table_description_schema.yml']},
     long_description=long_description,
     keywords='',
     license='Proprietary',
