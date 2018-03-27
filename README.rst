@@ -10,16 +10,13 @@ The Curator 🖼
    :alt: The Curator on PyPI
 
 
-The Curator helps you define pipelines for transforming dirty data into consumable APIs.
-
+The Curator helps you define pipelines for transforming dirty data into consumable databases.
 
 Usage
 -----
 
-Curation
-~~~~~~~~
-
 .. code:: python
+
   from thecurator import Curator
 
   # Paths to files describing different tables
@@ -35,29 +32,12 @@ Curation
   # Transform and insert a according to the descriptions
   curator.insert_dicts('lab', lab_dicts)
 
-Table Descriptions
-~~~~~~~~~~~~~~~~~~
-
-Every
-
-Transformations
-~~~~~~~~~~~~~~~
-
-API Generation
-~~~~~~~~~~~~~~
-
-.. code:: python
-  from thecurator import Curator
-
-
-
 
 See the tests. More coming soon...
-
 
 Development
 -----------
 
- - Install development requirements `pip install dev-requirements`
+ - Install development requirements `pip install -r dev-requirements.txt`
  - Make changes
  - Run the tests `pytest tests`
