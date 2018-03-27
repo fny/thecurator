@@ -43,4 +43,3 @@ data = [
         "taken_time": datetime.datetime(2017, 10, 4, 17, 30, 0)
     }
 ]
-

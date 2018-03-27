@@ -68,7 +68,7 @@ class Curator():
         transaction = connection.begin()
         try:
             connection.execute(table.insert(), cleaned_rows)
-        except:
+        except Exception:
             transaction.rollback()
             raise Exception('Insert failed')
 

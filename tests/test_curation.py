@@ -53,10 +53,14 @@ class TestFixtureData():
         self.data = FixtureData('labs_dirty.csv')
 
     def test_headers(self):
-        assert self.data.headers == ['patient_mrn', 'name', 'value', 'order_time', 'taken_time']
+        assert self.data.headers == [
+            'patient_mrn', 'name', 'value', 'order_time', 'taken_time'
+        ]
 
     def test_rows(self):
-        assert self.data.rows()[0] == ['A', 'Blood Pressure', '120', '09/03/17 10:30AM', '09/03/17 11:30AM']
+        assert self.data.rows()[0] == [
+            'A', 'Blood Pressure', '120', '09/03/17 10:30AM', '09/03/17 11:30AM'
+        ]
 
     def test_columns(self):
         assert self.data.columns()[0] == ['A', 'B', 'B', 'C', 'C', 'C']

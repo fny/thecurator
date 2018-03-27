@@ -41,7 +41,9 @@ class Registry():
             return self.get_table(table_name)['columns_by_name'][column_name]
         except KeyError:
             tb = sys.exc_info()[2]
-            raise LookupError(f'No column found in table {table_name} with name {column_name}').with_traceback(tb)
+            raise LookupError(
+                f'No column found in table {table_name} with name {column_name}'
+            ).with_traceback(tb)
 
     def get_transform(self, table_name, column_name):
         """Returns the transform function for a given table and column
