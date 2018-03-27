@@ -4,7 +4,7 @@ from .private import pypy_incompatible
 from .private.table_description import Registry
 
 """Version number of this package"""
-__VERSION__ = (0, 1, 1)
+__VERSION__ = (0, 1, 2)
 
 
 def requires_row(func):
