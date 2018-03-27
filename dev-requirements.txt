@@ -9,3 +9,7 @@ pandas
 readme_renderer
 flake8
 pytest
+
+# Packaging requirements
+wheel
+twine
