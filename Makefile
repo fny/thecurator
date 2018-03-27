@@ -14,7 +14,7 @@ setup:
 .PHONY: release
 release: clean test build
 	twine upload dist/*
-	echo "Don't forget to tag and push your release!"
+	@echo "Don't forget to tag and push your release!"
 
 .PHONY: release-test
 release-test: clean test build
@@ -24,4 +24,3 @@ release-test: clean test build
 test:
 	python setup.py check -m -r -s
 	pytest tests
-
