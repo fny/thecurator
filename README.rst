@@ -6,7 +6,7 @@ The Curator 🖼
    :alt: Build Status
 
 .. image:: https://badge.fury.io/py/thecurator.svg
-   :target: https://pypi.python.org/pypi/thecurator
+   :target: https://pypi.org/project/thecurator
    :alt: The Curator on PyPI
 
 
@@ -41,3 +41,4 @@ Development
  - Install development requirements `pip install -r dev-requirements.txt`
  - Make changes
  - Run the tests `pytest tests`
+ - See the Makefile for other useful commands
