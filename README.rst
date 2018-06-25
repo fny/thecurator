@@ -29,11 +29,11 @@ Usage
   # Transform a dictionary array according to the descriptions
   curator.transform_dicts('patient', patient_dicts)
 
-  # Transform and insert a according to the descriptions
+  # Transform and insert a dictionary array according to the descriptions
   curator.insert_dicts('lab', lab_dicts)
 
 
-See the tests. More coming soon...
+See the tests for more examples. More coming soon...
 
 Development
 -----------
