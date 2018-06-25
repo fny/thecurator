@@ -82,7 +82,7 @@ class Curator():
         Returns:
             :obj:`list` of :obj:`dict`: Transformed dicts
         """
-        column_names = raw_rows[0].keys()
+        column_names = self.table_registry.get_table(table_name)['columns_by_name'].keys()
         transforms_by_column = {}
         for column_name in column_names:
             transforms_by_column[column_name] = \

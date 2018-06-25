@@ -1,9 +1,11 @@
 import csv
+import json
 from thecurator.private import IS_PYPY, pypy_incompatible
 from helpers import relative_path, expand_path
 from thecurator import Curator
 from fixtures.db import engine
 from fixtures.data.labs_clean import data as labs_clean
+from fixtures.data.patients_missing_key_clean import data as patients_missing_first_clean
 
 if not IS_PYPY:
     import pandas
@@ -14,13 +16,17 @@ class FixtureData():
         self.headers = None
         self.data = []
         fixture_path = relative_path(__file__, f'fixtures/data/{file_path}')
-        with open(fixture_path, 'r') as csv_file:
-            csv_reader = csv.reader(csv_file)
-            for i, row in enumerate(csv_reader):
-                if i == 0:
-                    self.headers = row
-                else:
-                    self.data.append(row)
+        if fixture_path.endswith('.csv'):
+            with open(fixture_path, 'r') as csv_file:
+                csv_reader = csv.reader(csv_file)
+                for i, row in enumerate(csv_reader):
+                    if i == 0:
+                        self.headers = row
+                    else:
+                        self.data.append(row)
+        elif fixture_path.endswith('.json'):
+            with open(fixture_path, 'r') as json_file:
+                self.data = json.load(json_file)
 
     def rows(self):
         """Returns the data as rows"""
@@ -83,10 +89,17 @@ class TestCurator():
     def setup_method(self):
         self.labs_dirty = FixtureData('labs_dirty.csv')
         self.patients_dirty = FixtureData('patients_dirty.csv')
+        self.patients_missing_first = FixtureData('patients_dirty_missing_key.json')
 
     def test_transform_dicts(self):
         results = curator.transform_dicts('lab', self.labs_dirty.dicts())
         for result, clean in zip(results, labs_clean):
+            assert result == clean
+
+    # Tests where key in description.yml not in first record of self.data
+    def test_transform_missing_first(self):
+        results = curator.transform_dicts('patient', self.patients_missing_first.rows())
+        for result, clean in zip(results, patients_missing_first_clean):
             assert result == clean
 
     @pypy_incompatible
