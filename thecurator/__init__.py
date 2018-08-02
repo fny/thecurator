@@ -88,6 +88,7 @@ class Curator():
             transforms_by_column[column_name] = \
                 self.table_registry.get_transform(table_name, column_name)
         cooked_rows = []
+
         for raw_row in raw_rows:
             cooked_row = {}
             for column_name, raw_value in raw_row.items():
@@ -95,9 +96,16 @@ class Curator():
                 if not transform:
                     cooked_row[column_name] = raw_value
                 elif hasattr(transform, 'requires_row'):
-                    cooked_row[column_name] = transform(raw_row)
+                    continue
                 else:
                     cooked_row[column_name] = transform(raw_value)
+
+            for column_name in column_names:
+                transform = transforms_by_column[column_name]
+                if not transform:
+                    continue
+                elif hasattr(transform, 'requires_row'):
+                    cooked_row[column_name] = transform(raw_row)
             cooked_rows.append(cooked_row)
         return cooked_rows
 
