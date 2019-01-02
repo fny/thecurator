@@ -18,7 +18,7 @@ setup(
     package_data={'thecurator': ['table_description_schema.yml']},
     long_description=long_description,
     keywords='',
-    license='Proprietary',
+    license='MIT',
     author='Faraz Yashar',
     author_email='faraz.yashar@gmail.com',
     url='https://github.com/fny/thecurator',
